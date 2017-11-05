@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+# MixMailFromFile.sh
+
+# This program checks to see if there is a file named 'mail'
+# is in a <user>.  The file containing the remailer headers and
+# message is loaded up to the server with VX ConnectBot using
+# ssh. If the file 'mail' is found in /home/<user>, this script
+# sends the remailer message contained in 'mail' and 
+# shreds/deletes the file afterwards.  This program is executed
+# every minute by cron.  It was written for the purpose of sending
+# remailer messages from a cell phone.
+
+# cron: */1 * * * * /usr/local/sbin/MixMailFromFile.sh
+
+
+username=""    # fill in the <user> where mail is sent
+
+if [ -e /home/$username/mail ]; then                          # is file present
+   /usr/bin/mixmaster /home/$username/mail --send --mail      # exec mixmaster
+
+   shred -n 50 -z -u /home/$username/mail                     # shred/delete it
+fi
+
+exit 0
