@@ -2,19 +2,85 @@
 #
 # MixMailFromFile.sh
 
-# This program checks to see if there is a file named 'mail'
-# is in a <user>.  The file containing the remailer headers and
-# message is loaded up to the server with VX ConnectBot using
-# ssh. If the file 'mail' is found in /home/<user>, this script
-# sends the remailer message contained in 'mail' and 
-# shreds/deletes the file afterwards.  This program is executed
-# every minute by cron.  It was written for the purpose of sending
-# remailer messages from a cell phone.
+# This script is run on a Linux server wherein mixmaster has been
+# installed. The script will run with an installed mixmaster client
+# alone. It does not require a full mixmaster remailer installation.
+ 
+# It was written for the purpose of sending remailer messages via
+# an uploaded file to a server. Remailer headers and message must be
+# uploaded up to the remailer server through a 'VX ConnectBot' app ssh
+# connection.
 
-# cron: */1 * * * * /usr/local/sbin/MixMailFromFile.sh
+# Create a new user on your server. Choose an inconspicuous user name
+# so as to not let on that it has anything to do with a remailer. This
+# user will be the user that receives the uploaded remailer
+# headers/message file from your cell phone.  The file is simply named
+# 'mail'.
+
+# The script checks to see if there is a file named 'mail' within
+# the newly created user. The 'mail' file containing the remailer
+# headers and message is loaded up to the server with 'VX ConnectBot'
+# app through a 'VX ConnectBot' ssh connection. If the file 'mail' is
+# found in /home/?user?, this script sends the remailer message
+# contained in the 'mail' file and shreds/deletes the file afterwards.
+
+# This script is executed via cron every minute to process any incoming
+# messages.
+
+# cron:
+# */1 * * * * /usr/local/sbin/MixMailFromFile.sh
 
 
-username=""    # fill in the <user> where mail is sent
+############################################################################
+#                                                                          #
+# VX ConnectBot setup:                                                     #
+# Download VX ConnectBot (not ConnectBot).                                 #
+# Start VX ConnectBot.                                                     #
+# -- To setup VX ConnectBot to connect to your server: --                  #
+# 1. At the bottom, select ssh by clicking on the area to the left of      #
+#    the prompt (it is probably already set to ssh').                      #
+# 2. Then enter your server name on the line.                              #
+# 3. Hit enter and then yes to stop the bogus connection try.              #
+# 4. Press and hold down on the new entry that was created at the          #
+#    top of the screen and select 'Edit host'.                             #
+# 5. A. Tap 'Font size' and enter 29 (this may be different per phone).    #
+#    B. Tap 'Use SSH auth agent' and select Yes.                           #
+#    C. Check 'Compression' and 'Start shell session'.                     #
+#    D. Tap 'Username' and enter the user name you created on your server. #
+#    E. Tap 'Host' and enter your server domain name or its IP address.    #
+#    F. Tap 'Port' and enter the server port (probably 22).                #
+#                                                                          #
+# -- To upload the headers/message files: --                               #
+# 1. Go to your server/user and create a file called mail.template.  Place #
+#    these headers therein (remove leading #):                             #
+#                                                                          #
+#Chain: *,*,*;copies=3;                                                    #
+#To:                                                                       #
+#Subject:                                                                  #
+#<blank line>                                                              #
+#                                                                          #
+# 2. Go to your server and create another file called news.template.       #
+#    Place these headers therein:                                          #
+#                                                                          #
+#Chain: *,*,*;copies=3;                                                    #
+#To: mail2news@m2n.mixmin.net,mail2news@dizum.com                          #
+#Newsgroups: alt.privacy.anon-server                                       #
+#Subject:                                                                  #
+#<blank line>                                                              #
+#                                                                          #
+# 3. Tap on the VX ConnectBot shell session area and click MORE/           #
+#    Download file and download the two templates.  Place the files        #
+#    in (android) /storage/emulated/Downloads (VX ConnectBot can           #
+#    easily find them in that folder).  You will have to use a             #
+#    program like Total Commander to find the files and edit the           #
+#    headers for sending.  Do a Copy file in Total Commander and rename    #
+#    the file 'mail' before uploading.  Then use VX ConnectBot to UPLOAD   #
+#    the file to the server.                                               #
+#                                                                          #
+############################################################################
+
+
+username=""    # fill in the "user" where mail is sent
 
 if [ -e /home/$username/mail ]; then                          # is file present
    /usr/bin/mixmaster /home/$username/mail --send --mail      # exec mixmaster
