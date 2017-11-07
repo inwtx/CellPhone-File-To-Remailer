@@ -1,12 +1,16 @@
 # CellPhone-File-To-Remailer
 
-Send remailer messages via uploaded file to a mixmaster server.
+Send remailer messages via an uploaded file to a mixmaster server.
 
 MixMailFromFile.sh
 
-This program checks to see if there is a file named 'mail'
-is in a newly created ?user?.  The file containing the remailer headers and
-message is loaded up to the server with 'VX ConnectBot' through a 'VX ConnectBot' 
-ssh connection. If the file 'mail' is found in /home/?user?, this script
-sends the remailer message contained in 'mail' and 
-shreds/deletes the file afterwards.
+This script is run on a Linux server wherein mixmaster has been
+installed. The script will run with an installed mixmaster client
+alone. It does not require a full mixmaster remailer installation.
+
+It was written for the purpose of sending remailer messages via
+an uploaded file to a server. Remailer headers and message must be
+uploaded up to the remailer server through a 'VX ConnectBot' ssh
+connection.
+
+See futher setup instructions within the Script file.
